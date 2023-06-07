@@ -1,4 +1,5 @@
 // Definir la clase constructora de Persona
+
 class Persona {
     constructor(dni, nombre, apellido, fechaNacimiento, nacionalidad, sexo) {
       this.dni = dni;
