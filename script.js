@@ -1,3 +1,15 @@
+// Definir la clase constructora de Persona
+class Persona {
+    constructor(dni, nombre, apellido, fechaNacimiento, nacionalidad, sexo) {
+      this.dni = dni;
+      this.nombre = nombre;
+      this.apellido = apellido;
+      this.fechaNacimiento = fechaNacimiento;
+      this.nacionalidad = nacionalidad;
+      this.sexo = sexo;
+    }
+  }
+
 document.getElementById('access-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Evita que el formulario se envíe
   
