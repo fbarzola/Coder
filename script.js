@@ -41,6 +41,5 @@ document.getElementById('access-form').addEventListener('submit', function(event
       return;
     }
   
-    // Aquí puedes realizar más validaciones o enviar los datos al servidor
   });
  
