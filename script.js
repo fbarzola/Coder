@@ -11,41 +11,50 @@ class Persona {
 }
 
 // Crear un array para almacenar las personas
-const personas = [];
+let personas = [];
 
-document.getElementById('access-form').addEventListener('submit', function(event) {
+// Recuperar los datos del localStorage al cargar la página
+window.addEventListener('DOMContentLoaded', () => {
+  const personasJSON = localStorage.getItem('personas');
+  if (personasJSON) {
+    personas = JSON.parse(personasJSON);
+    console.log('Datos recuperados del localStorage:', personas);
+  }
+});
+
+document.getElementById('access-form').addEventListener('submit', (event) => {
   event.preventDefault(); // Evita que el formulario se envíe
 
   // Obtener los valores de los campos de entrada
-  let dni = document.getElementById('dni').value;
-  let nombre = document.getElementById('nombre').value;
-  let apellido = document.getElementById('apellido').value;
-  let fechaNacimiento = document.getElementById('fecha-nacimiento').value;
-  let nacionalidad = document.getElementById('nacionalidad').value;
-  let sexo = document.getElementById('sexo').value;
+  const dni = document.getElementById('dni').value;
+  const nombre = document.getElementById('nombre').value;
+  const apellido = document.getElementById('apellido').value;
+  const fechaNacimiento = document.getElementById('fecha-nacimiento').value;
+  const nacionalidad = document.getElementById('nacionalidad').value;
+  const sexo = document.getElementById('sexo').value;
 
   // Validación de campos
-  if (dni === '' || nombre === '' || apellido === '' || fechaNacimiento === '' || nacionalidad === '' || sexo === '') {
+  if (!dni || !nombre || !apellido || !fechaNacimiento || !nacionalidad || !sexo) {
     alert('Por favor, completa todos los campos.');
     return;
   }
 
   // Validación de fecha de nacimiento
-  var regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
+  const regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
   if (!regexFecha.test(fechaNacimiento)) {
     alert('La fecha de nacimiento debe tener el formato DD/MM/AAAA.');
     return;
   }
 
   // Validación de DNI (solo números)
-  var regexDNI = /^\d+$/;
+  const regexDNI = /^\d+$/;
   if (!regexDNI.test(dni)) {
     alert('El DNI debe contener solo números.');
     return;
   }
 
   // Crear una nueva instancia de Persona con los valores ingresados
-  var persona = new Persona(dni, nombre, apellido, fechaNacimiento, nacionalidad, sexo);
+  const persona = new Persona(dni, nombre, apellido, fechaNacimiento, nacionalidad, sexo);
 
   // Agregar la persona al array personas
   personas.push(persona);
@@ -54,11 +63,11 @@ document.getElementById('access-form').addEventListener('submit', function(event
   console.log(personas);
 
   // Limpiar los campos del formulario
-  this.reset();
+  event.target.reset();
 
   // Recorrer el array personas
   personas.forEach((persona, index) => {
-    console.log('Persona ' + (index + 1) + ':');
+    console.log(`Persona ${index + 1}:`);
     console.log('DNI:', persona.dni);
     console.log('Nombre:', persona.nombre);
     console.log('Apellido:', persona.apellido);
@@ -66,7 +75,11 @@ document.getElementById('access-form').addEventListener('submit', function(event
     console.log('Nacionalidad:', persona.nacionalidad);
     console.log('Sexo:', persona.sexo);
     console.log('-----------------------');
-  }); 
+  });
+
+  // Guardar el array personas en el localStorage
+  localStorage.setItem('personas', JSON.stringify(personas));
+});
 
 // Método de búsqueda por DNI
 function buscarPorDNI(dni) {
@@ -85,5 +98,5 @@ function buscarPorNombreApellido(nombre, apellido) {
   const resultado = personas.filter(persona => persona.nombre === nombre && persona.apellido === apellido);
   return resultado;
 }
-}); 
+
 

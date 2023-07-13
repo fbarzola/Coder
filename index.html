@@ -20,13 +20,15 @@ Conexion con lector RFID y molinete.  -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Accesos</title>
-  <link rel="stylesheet" href="estilo.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="estilo2.css"> 
 </head>
 <body>
-  <h1>CONTROL DE ACCESOS</h1>
 
-  <form id="access-form" action="#" method="post">
-    <div class="form-group">
+  <h1 class="title">CONTROL DE ACCESOS</h1>
+
+  <form id="access-form" action="#" method="post" class="container-sm">
+      <div class="form-group">
       <div class="name-labels">
         <label for="nombre">Nombre:</label>
         <label for="apellido">Apellido:</label>
@@ -60,8 +62,8 @@ Conexion con lector RFID y molinete.  -->
       </div>
     </div>
 
+         <button type="submit" class="btn btn-primary btn-lg mx-auto mt-4 rounded-pill text-uppercase">Ingresar</button>
 
-    <button type="submit">Ingresar</button>
   </form>
 
   <script src="script.js"></script>
