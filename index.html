@@ -21,14 +21,15 @@ Conexion con lector RFID y molinete.  -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Accesos</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="estilo2.css"> 
+  <link rel="stylesheet" href="estilo2.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 </head>
 <body>
 
   <h1 class="title">CONTROL DE ACCESOS</h1>
 
   <form id="access-form" action="#" method="post" class="container-sm">
-      <div class="form-group">
+    <div class="form-group">
       <div class="name-labels">
         <label for="nombre">Nombre:</label>
         <label for="apellido">Apellido:</label>
@@ -53,20 +54,48 @@ Conexion con lector RFID y molinete.  -->
     <div class="form-group">
       <div class="name-labels">
         <label for="nacionalidad">Nacionalida:</label>
-        <label for="sexo ">Sexo:</label>
+        <label for="sexo">Sexo:</label>
       </div>
       <div class="name-inputs">
         <input type="text" id="nacionalidad" name="nacionalidad" required placeholder="Ingrese su nacionalidad" title="Nacionalidad" />
-        <input type="text" id="sexo" name="sexo" required placeholder="Ingrese su sexo" title="Sexo" />
-      </div>
+        <select id="sexo" name="sexo" required>
+          <option value="" disabled selected>Seleccione una opción</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </select>
       </div>
     </div>
 
-         <button type="submit" class="btn btn-primary btn-lg mx-auto mt-4 rounded-pill text-uppercase">Ingresar</button>
+    <div class="btn-center">
+      <button type="submit" class="btn btn-ingresar">Ingresar</button>
+    </div>
 
   </form>
 
+    <div class="table-container">
+    <h2>USUARIOS CARGADOS</h2>
+    <div class="btn-container">
+      <div class="btn-group">
+        <button id="verUsuariosBtn" class="btn btn-ver-usuarios">VER USUARIOS</button>
+        <h3></h3>
+        <button id="limpiarUsuariosBtn" class="btn btn-limpiar-usuarios">LIMPIAR USUARIOS</button>
+    <table id="usersTable" class="table mt-3">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Fecha de Nacimiento</th>
+          <th>Nacionalidad</th>
+          <th>Sexo</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <!-- Aquí se mostrarán los usuarios cargados -->
+      </tbody>
+    </table>
+  </div>
   <script src="script.js"></script>
-
 </body>
 </html>

@@ -17,10 +17,59 @@ let personas = [];
 window.addEventListener('DOMContentLoaded', () => {
   const personasJSON = localStorage.getItem('personas');
   if (personasJSON) {
-    personas = JSON.parse(personasJSON);
-    console.log('Datos recuperados del localStorage:', personas);
+    personas = JSON.parse(personasJSON);    
   }
 });
+
+// Función para obtener el array personas del localStorage
+function obtenerPersonasDelLocalStorage() {
+  const personasJSON = localStorage.getItem('personas');
+  return personasJSON ? JSON.parse(personasJSON) : [];
+}
+
+// Función asincrónica para obtener el JSON de personas
+async function obtenerPersonasJSON() {
+  try {
+    // Intentamos obtener el array personas del localStorage
+    let personas = obtenerPersonasDelLocalStorage();
+    return JSON.stringify(personas);
+  } catch (error) {
+    console.error('Error al obtener el JSON de personas:', error);
+    return '[]'; // Retornamos un JSON vacío en caso de error
+  }
+}
+
+// Función para mostrar los usuarios en la tabla
+async function mostrarUsuariosEnTabla() {
+  const usersTableBody = document.getElementById('usersTableBody');
+  usersTableBody.innerHTML = ''; // Limpiar la tabla antes de mostrar los usuarios
+
+  try {
+    // Obtener el JSON de personas
+    const personasJSON = await obtenerPersonasJSON();
+    const personas = JSON.parse(personasJSON);
+
+    personas.forEach((persona) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${persona.nombre}</td>
+        <td>${persona.apellido}</td>
+        <td>${persona.dni}</td>
+        <td>${persona.fechaNacimiento}</td>
+        <td>${persona.nacionalidad}</td>
+        <td>${persona.sexo}</td>
+      `;
+      usersTableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error al mostrar los usuarios en la tabla:', error);
+  }
+}
+
+const paisesValidos = [
+  'Argentina', 'Brasil', 'Chile', 'Colombia', 'Ecuador', 'Perú', 'Venezuela', 'EE.UU', 'Bolivia',
+  'Uruguay', 'Mexico', 'Canada','Italia','España',
+];
 
 document.getElementById('access-form').addEventListener('submit', (event) => {
   event.preventDefault(); // Evita que el formulario se envíe
@@ -35,21 +84,77 @@ document.getElementById('access-form').addEventListener('submit', (event) => {
 
   // Validación de campos
   if (!dni || !nombre || !apellido || !fechaNacimiento || !nacionalidad || !sexo) {
-    alert('Por favor, completa todos los campos.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Error',
+      text: 'Por favor, completa todos los campos.',
+    });
     return;
   }
 
   // Validación de fecha de nacimiento
   const regexFecha = /^\d{2}\/\d{2}\/\d{4}$/;
   if (!regexFecha.test(fechaNacimiento)) {
-    alert('La fecha de nacimiento debe tener el formato DD/MM/AAAA.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'La fecha de nacimiento debe tener el formato DD/MM/AAAA.',
+    });
+    return;
+  }
+
+  const regexDNI1 = /^\d+$/;
+  const dniNumber = parseInt(dni, 10);
+  if (!regexDNI1.test(dni) || dniNumber < 5000000 || dniNumber > 99999999) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'El DNI debe contener solo números entre 5000000 y 99999999.',
+    });
     return;
   }
 
   // Validación de DNI (solo números)
   const regexDNI = /^\d+$/;
   if (!regexDNI.test(dni)) {
-    alert('El DNI debe contener solo números.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'El DNI debe contener solo números.',
+    });
+    return;
+  }
+
+ 
+  // Validación de nombre y apellido (más de 2 letras y puede contener 1 espacio)
+const regexNombreApellido = /^[a-zA-Z]+(?:\s[a-zA-Z]+)?$/;
+if (!regexNombreApellido.test(nombre) || !regexNombreApellido.test(apellido)) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: 'El nombre y el apellido deben tener más datos y pueden contener un espacio.',
+  });
+  return;
+}
+
+  // Validación de nombre y apellido (más de 2 letras y puede contener 1 espacio)
+const regexNombreApellido1 = /^[a-zA-Z]+(?:\s[a-zA-Z]+)?$/;
+if (!regexNombreApellido1.test(nombre) || !regexNombreApellido1.test(apellido)) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: 'El nombre y el apellido deben contener solo letras y pueden contener un espacio.',
+  });
+  return;
+}
+
+  // Validación de nacionalidad
+  if (!paisesValidos.includes(nacionalidad)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Nacionalidad no válida. Por favor, ingrese un país válido.',
+    });
     return;
   }
 
@@ -59,44 +164,43 @@ document.getElementById('access-form').addEventListener('submit', (event) => {
   // Agregar la persona al array personas
   personas.push(persona);
 
-  // Mostrar el array actualizado
-  console.log(personas);
-
   // Limpiar los campos del formulario
   event.target.reset();
 
-  // Recorrer el array personas
-  personas.forEach((persona, index) => {
-    console.log(`Persona ${index + 1}:`);
-    console.log('DNI:', persona.dni);
-    console.log('Nombre:', persona.nombre);
-    console.log('Apellido:', persona.apellido);
-    console.log('Fecha de Nacimiento:', persona.fechaNacimiento);
-    console.log('Nacionalidad:', persona.nacionalidad);
-    console.log('Sexo:', persona.sexo);
-    console.log('-----------------------');
-  });
-
   // Guardar el array personas en el localStorage
   localStorage.setItem('personas', JSON.stringify(personas));
+
+   // Mostrar mensaje de éxito
+   Swal.fire({
+    icon: 'success',
+    title: 'Éxito',
+    text: 'Persona agregada correctamente.',
+
+  });
 });
 
-// Método de búsqueda por DNI
-function buscarPorDNI(dni) {
-  const resultado = personas.filter(persona => persona.dni === dni);
-  return resultado;
-}
+// Agregar evento al botón "Ver Usuarios" para mostrar los usuarios en la tabla
+document.getElementById('verUsuariosBtn').addEventListener('click', () => {
+  mostrarUsuariosEnTabla();
+});
 
-// Método de filtrado por nacionalidad
-function filtrarPorNacionalidad(nacionalidad) {
-  const resultado = personas.filter(persona => persona.nacionalidad === nacionalidad);
-  return resultado;
-}
+document.getElementById('limpiarUsuariosBtn').addEventListener('click', () => {
+  // Limpiar el array de usuarios
+  personas = [];
+  // Limpiar el contenido de la tabla
+  document.getElementById('usersTableBody').innerHTML = '';
+  // Guardar el array personas vacío en el localStorage
+  localStorage.setItem('personas', JSON.stringify(personas));
 
-// Método de búsqueda por nombre y apellido
-function buscarPorNombreApellido(nombre, apellido) {
-  const resultado = personas.filter(persona => persona.nombre === nombre && persona.apellido === apellido);
-  return resultado;
-}
+  // Mostrar mensaje de éxito
+  Swal.fire({
+    icon: 'success',
+    title: 'Éxito',
+    text: 'Usuarios limpiados correctamente.',
+  });
+
+});
+
+
 
 
